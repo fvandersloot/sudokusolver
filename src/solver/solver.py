@@ -1,6 +1,6 @@
 from typing import Tuple
 
-    
+
 def issafe(board: list[int], index: int, value: int):
     if len(board) != 81:
         raise ValueError("invalid sudoku board")
@@ -20,9 +20,9 @@ def issafe(board: list[int], index: int, value: int):
 
         if (ix != index and board[ix] == value) or (iy != index and board[iy] == value):
             return False
-        
-    x = x - x%3
-    y = y - y%3
+
+    x = x - x % 3
+    y = y - y % 3
 
     for xoff in range(3):
         for yoff in range(3):
@@ -72,15 +72,18 @@ def printboard(board: list[int]):
 
     print('[')
     for i in range(0, 81, 9):
-        print(f"{board[i]}, {board[i+1]}, {board[i+2]}, {board[i+3]}, {board[i+4]}, {board[i+5]}, {board[i+6]}, {board[i+7]}, {board[i+8]}{', ' if i < 81-9 else ''} ")
+        inners = ', '.join(board[i:i+9])
+
+        print(f"{inners}{', ' if i < 81-9 else ''}")
 
     print(']')
+
 
 def checkboard(board: list[int]) -> bool:
     for i in range(81):
         if not issafe(board, i, board[i]):
             return False
-    
+
     return True
 
 
