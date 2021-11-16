@@ -72,7 +72,7 @@ def printboard(board: List[int]):
 
     print('[')
     for i in range(0, 81, 9):
-        inners = ', '.join(board[i:i+9])
+        inners = ', '.join([str(i) for i in board[i:i+9]])
 
         print(f"{inners}{', ' if i < 81-9 else ''}")
 
