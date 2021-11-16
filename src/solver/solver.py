@@ -1,7 +1,7 @@
-from typing import Tuple
+from typing import List, Tuple
 
 
-def issafe(board: list[int], index: int, value: int):
+def issafe(board: List[int], index: int, value: int):
     if len(board) != 81:
         raise ValueError("invalid sudoku board")
 
@@ -33,7 +33,7 @@ def issafe(board: list[int], index: int, value: int):
     return True
 
 
-def solverecursive(board: list[int], fromindex: int) -> Tuple[bool, list[int]]:
+def solverecursive(board: List[int], fromindex: int) -> Tuple[bool, list[int]]:
     if len(board) != 81:
         raise ValueError(f"invalid sudoku board. {len(board)} instead of 81")
 
@@ -59,14 +59,14 @@ def solverecursive(board: list[int], fromindex: int) -> Tuple[bool, list[int]]:
     return False, board
 
 
-def solve(board: list[int]) -> Tuple[bool, list[int]]:
+def solve(board: List[int]) -> Tuple[bool, list[int]]:
     if len(board) != 81:
         raise ValueError(f"invalid sudoku board. {len(board)} instead of 81")
 
     return solverecursive(board, 0)
 
 
-def printboard(board: list[int]):
+def printboard(board: List[int]):
     if len(board) != 81:
         raise ValueError(f"invalid sudoku board. {len(board)} instead of 81")
 
@@ -79,7 +79,7 @@ def printboard(board: list[int]):
     print(']')
 
 
-def checkboard(board: list[int]) -> bool:
+def checkboard(board: List[int]) -> bool:
     for i in range(81):
         if not issafe(board, i, board[i]):
             return False
