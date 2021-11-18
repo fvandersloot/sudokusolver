@@ -1,4 +1,6 @@
-from solver.solver import issafe, solve
+from typing import List, Tuple
+from solver.solver import checkboard, createrandomsolution, hassinglesolution, issafe, solve
+import pytest
 
 #     0  1  2  3  4  5  6  7  8
 #   *--+--+--*--+--+--*--+--+--*
@@ -21,16 +23,8 @@ from solver.solver import issafe, solve
 # 8 |72|73|74|75|76|77|78|79|80|
 #   *--+--+--*--+--+--*--+--+--+
 
-
-def test_movechecker():
-    board = [1 if i == 1 else 0 for i in range(81)]
-
-    assert not issafe(board, 0, 1)
-    assert issafe(board, 0, 2)
-
-
-def test_solver():
-    data = [([
+DATA: List[Tuple[List[int], List[int], bool]] = [(
+    [
         0, 0, 0, 9, 0, 0, 0, 1, 0,
         0, 0, 0, 0, 7, 0, 0, 0, 0,
         0, 0, 0, 5, 0, 8, 4, 0, 3,
@@ -50,7 +44,7 @@ def test_solver():
         6, 5, 3, 1, 4, 7, 2, 9, 8,
         4, 9, 7, 6, 8, 2, 5, 3, 1,
         2, 1, 8, 3, 9, 5, 6, 7, 4
-    ]), ([
+    ], True), ([
         0, 0, 0, 8, 0, 1, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 4, 3,
         5, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -70,12 +64,40 @@ def test_solver():
         6, 4, 2, 1, 9, 8, 3, 7, 5,
         7, 8, 3, 4, 6, 5, 9, 2, 1,
         9, 5, 1, 2, 3, 7, 6, 8, 4
-    ])
-    ]
+    ], False)
+]
 
-    for testboard, real_solution in data:
+
+def test_movechecker():
+    board = [1 if i == 1 else 0 for i in range(81)]
+
+    assert not issafe(board, 0, 1)
+    assert issafe(board, 0, 2)
+
+
+def test_solver():
+
+    for testboard, real_solution, _ in DATA:
 
         solved, solution = solve(testboard)
 
         assert solved
         assert solution == real_solution
+
+
+def test_boardchecker():
+    board = [i % 9 for i in range(81)]
+
+    assert not checkboard(board)
+
+    for _, solution, _ in DATA:
+        assert checkboard(solution)
+
+
+@pytest.mark.timeout(1000)
+def test_hassinglesolution():
+    for testboard, _, hassingle in DATA:
+        assert hassingle == hassinglesolution(testboard)
+    
+def test_boardgeneration():
+    assert(checkboard(createrandomsolution()))
