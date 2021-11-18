@@ -144,5 +144,45 @@ def createpuzzle(tries: int = 3) -> Tuple[List[int], List[int]]:
 
     return board, solution
 
+
+def drawboard(board: List[int], width: int, height) -> Image:
+    img = Image.new(mode='RGB', size=(width, height), color=(255, 255, 255))
+
+    draw = ImageDraw.Draw(img)
+    for i in range(10):
+        w = 3 if i % 3 == 0 else 1
+        draw.line([(i * width // 9, 0), (i * width // 9, height)], fill=(0, 0, 0), width=w)
+        draw.line([(0, i * height // 9), (width, i * height // 9)], fill=(0, 0, 0), width=w)
+
+
+    font = ImageFont.truetype("arial.ttf", ((width + height) >> 1) // 9)
+
+    for index, value in enumerate(board):
+        if value > 0:
+            x = index % 9
+            y = index // 9
+
+            offsetx = width // 18
+            offsety = height // 18
+
+            draw.text((offsetx + x * width // 9, offsety + y * height // 9), str(value), (0, 0, 0), anchor="mm", font=font)
+
+    return img
+
+
+if __name__ == "__main__":  # pragma: no cover
+    board, solution = createpuzzle(1)
+
+    print("generated puzzle: ")
+    printboard(board)
     print()
+    print(f"generated puzzle has {len([i for i in board if i > 0])} filled in values")
+
+    print('generated solution: ')
     printboard(solution)
+    print()
+    print(f"Solution is {'not' if not checkboard(solution) else ''} valid")
+
+    drawboard(board, 900, 900).show()
+    drawboard(solution, 900, 900).show()
+    
