@@ -1,5 +1,5 @@
 from typing import List, Tuple
-from solver.solver import checkboard, createrandomsolution, hassinglesolution, issafe, solve
+from solver.solver import BOARDSIZE, checkboard, createpuzzle, createrandomsolution, hassinglesolution, issafe, solve, solverecursive
 import pytest
 
 #     0  1  2  3  4  5  6  7  8
@@ -71,33 +71,103 @@ DATA: List[Tuple[List[int], List[int], bool]] = [(
 def test_movechecker():
     board = [1 if i == 1 else 0 for i in range(81)]
 
+    # Testcase: adding a number that would create a conflict
     assert not issafe(board, 0, 1)
+
+    # Testcase: adding a number that would not create a conflict
     assert issafe(board, 0, 2)
+
+    # Testcase: calling function on board of invalid size
+    with pytest.raises(ValueError):
+        issafe([], 0, 1)
+
+    # Testcase: calling function on non-existent tile
+    with pytest.raises(ValueError):
+        issafe(board, BOARDSIZE, 1)
+
+    # Testcase: calling function with invalid value
+    with pytest.raises(ValueError):
+        issafe(board, 0, 0)
+
+
+def test_recursivesolver():
+    # Testcase: invalid boardsize
+    with pytest.raises(ValueError):
+        solverecursive([0, 0], 0)
+
+    # Testcase: invalid index
+    emptyboard = [0 for _ in range(BOARDSIZE)]
+    with pytest.raises(ValueError):
+        solverecursive(emptyboard, BOARDSIZE + 1)
+
+    # Testcase: invaled order length
+    with pytest.raises(ValueError):
+        solverecursive(emptyboard, 0, [1, 2, 3])
+
+    # Other testcases are coverd in test_solver
 
 
 def test_solver():
+    # Testcase: invalid boardsize
+    with pytest.raises(ValueError):
+        solve([0, 0])
 
     for testboard, real_solution, _ in DATA:
 
         solved, solution = solve(testboard)
 
+        # Testcase: was able to find a solution
         assert solved
+
+        # Testcase: was able to find expected solution
         assert solution == real_solution
 
 
 def test_boardchecker():
-    board = [i % 9 for i in range(81)]
+    # Testcase: invalid boardsize
+    with pytest.raises(ValueError):
+        checkboard([0, 0])
 
+    # Testcase: conflicting board
+    board = [i % 9 for i in range(81)]
     assert not checkboard(board)
 
+    # Testcase: non-conflicting board
     for _, solution, _ in DATA:
         assert checkboard(solution)
 
 
-@pytest.mark.timeout(1000)
 def test_hassinglesolution():
+    # Testcase: invalid boardsize
+    with pytest.raises(ValueError):
+        hassinglesolution([0, 0])
+
     for testboard, _, hassingle in DATA:
+        # Testcase: check if output matches checked value
         assert hassingle == hassinglesolution(testboard)
-    
+
+
 def test_boardgeneration():
-    assert(checkboard(createrandomsolution()))
+    board = createrandomsolution()
+
+    # Testcase: generated board is valid
+    assert len(board) == BOARDSIZE
+    assert checkboard(board)
+
+
+def test_puzzlegeneration():
+    puzzle, solution = createpuzzle(2)
+
+    issolvable, solvedpuzzle = solve(puzzle)
+
+    # Testcase: puzzle is solvable
+    assert issolvable
+
+    # Testcase: puzzle is solvable to solution
+    assert solvedpuzzle == solution
+
+    # Testcase: puzzle has single solution
+    assert hassinglesolution(puzzle)
+
+    # Testcase: all non zero cells in puzzle are the same as in solution
+    assert all([v == 0 or v == solution[i] for i, v in enumerate(puzzle)])
