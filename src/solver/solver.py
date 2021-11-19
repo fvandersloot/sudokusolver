@@ -11,11 +11,11 @@ def issafe(board: List[int], index: int, value: int):
     if len(board) != BOARDSIZE:
         raise ValueError("invalid sudoku board")
 
-    if 1 > value or value > 9:
-        raise ValueError("invalid cell value for sudoku")
-
     if 0 > index or index >= BOARDSIZE:
         raise ValueError("index out of range")
+
+    if 1 > value or value > 9:
+        raise ValueError("invalid cell value for sudoku")
 
     x = index % 9
     y = index // 9
@@ -39,15 +39,15 @@ def issafe(board: List[int], index: int, value: int):
     return True
 
 
-def solverecursive(board: List[int], fromindex: int, order=[i for i in range(1, 10)]) -> Tuple[bool, List[int]]:
+def solverecursive(board: List[int], fromindex: int, order: List[int] = [i for i in range(1, 10)]) -> Tuple[bool, List[int]]:
     if len(board) != BOARDSIZE:
         raise ValueError(f"invalid sudoku board. {len(board)} instead of BOARDSIZE")
 
-    if len(order) != 9:
-        raise ValueError('invalid number of order elements')
-
     if 0 > fromindex or fromindex > BOARDSIZE:
         raise ValueError("index out of range")
+
+    if len(order) != 9:
+        raise ValueError('invalid number of order elements')
 
     while (fromindex < BOARDSIZE and board[fromindex] > 0):
         fromindex += 1
@@ -75,22 +75,12 @@ def solve(board: List[int]) -> Tuple[bool, List[int]]:
     return solverecursive(copy.deepcopy(board), 0)
 
 
-def printboard(board: List[int]):  # pragma: no cover
+def checkboard(board: List[int]) -> bool:
     if len(board) != BOARDSIZE:
         raise ValueError(f"invalid sudoku board. {len(board)} instead of BOARDSIZE")
 
-    print('[')
-    for i in range(0, BOARDSIZE, 9):
-        inners = ', '.join([str(i) for i in board[i:i+9]])
-
-        print(f"{inners}{', ' if i < BOARDSIZE-9 else ''}")
-
-    print(']')
-
-
-def checkboard(board: List[int]) -> bool:
-    for i in range(BOARDSIZE):
-        if not issafe(board, i, board[i]):
+    for i, v in enumerate(board):
+        if v > 0 and not issafe(board, i, v):
             return False
 
     return True
@@ -145,7 +135,20 @@ def createpuzzle(tries: int = 3) -> Tuple[List[int], List[int]]:
     return board, solution
 
 
-def drawboard(board: List[int], width: int, height) -> Image:
+def printboard(board: List[int]):  # pragma: no cover
+    if len(board) != BOARDSIZE:
+        raise ValueError(f"invalid sudoku board. {len(board)} instead of BOARDSIZE")
+
+    print('[')
+    for i in range(0, BOARDSIZE, 9):
+        inners = ', '.join([str(i) for i in board[i:i+9]])
+
+        print(f"{inners}{', ' if i < BOARDSIZE-9 else ''}")
+
+    print(']')
+
+
+def drawboard(board: List[int], width: int, height) -> Image:  # pragma: no cover
     img = Image.new(mode='RGB', size=(width, height), color=(255, 255, 255))
 
     draw = ImageDraw.Draw(img)
@@ -153,7 +156,6 @@ def drawboard(board: List[int], width: int, height) -> Image:
         w = 3 if i % 3 == 0 else 1
         draw.line([(i * width // 9, 0), (i * width // 9, height)], fill=(0, 0, 0), width=w)
         draw.line([(0, i * height // 9), (width, i * height // 9)], fill=(0, 0, 0), width=w)
-
 
     font = ImageFont.truetype("arial.ttf", ((width + height) >> 1) // 9)
 
@@ -183,6 +185,5 @@ if __name__ == "__main__":  # pragma: no cover
     print()
     print(f"Solution is {'not' if not checkboard(solution) else ''} valid")
 
-    drawboard(board, 900, 900).show()
-    drawboard(solution, 900, 900).show()
-    
+    drawboard(board, 300, 300).show()
+    drawboard(solution, 300, 300).show()
