@@ -97,7 +97,7 @@ def solve(board: List[int]) -> Tuple[bool, List[int]]:
 
     Returns:
         solved (bool): True if a solution was found; False otherwise
-        newboard (List[int]): the solved sudokuboard        
+        newboard (List[int]): the solved sudokuboard
     """
     if len(board) != BOARDSIZE:
         raise ValueError(f"invalid sudoku board. {len(board)} instead of BOARDSIZE")
@@ -199,7 +199,7 @@ def printboard(board: List[int]):  # pragma: no cover
     """Prettyprint the given board to the console
 
     Parameters:
-        board (List[int]): the sudoku board        
+        board (List[int]): the sudoku board
     """
     if len(board) != BOARDSIZE:
         raise ValueError(f"invalid sudoku board. {len(board)} instead of BOARDSIZE")
