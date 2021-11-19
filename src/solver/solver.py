@@ -49,7 +49,7 @@ def issafe(board: List[int], index: int, value: int) -> bool:
     return True
 
 
-def solverecursive(board: List[int], fromindex: int, order: List[int] = None) -> Tuple[bool, List[int]]:
+def solverecursive(board: List[int], fromindex: int, order: List[int] = []) -> Tuple[bool, List[int]]:
     """Fill in the next empty square and solve the new subproblem.
 
     Parameters:
@@ -61,7 +61,7 @@ def solverecursive(board: List[int], fromindex: int, order: List[int] = None) ->
         solved (bool): True if a recursive call was successful in solving the subproblem; False otherwise
         newboard (List[int]): the solved sudokuboard
     """
-    if order is None:
+    if len(order) == 0:
         order = [i for i in range(1, 10)]
 
     if len(board) != BOARDSIZE:
