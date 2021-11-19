@@ -7,7 +7,17 @@ import random
 BOARDSIZE = 81
 
 
-def issafe(board: List[int], index: int, value: int):
+def issafe(board: List[int], index: int, value: int) -> bool:
+    """Check if placing the value on the board at the index does not induce a conflict.
+
+    Parameters:
+        board (List[int]): the sudoku board
+        index (int): the index on the board to check
+        value (int): the value to check
+
+    Returns:
+        safe (bool): True if there is no conflicts; False otherwise
+    """
     if len(board) != BOARDSIZE:
         raise ValueError("invalid sudoku board")
 
@@ -40,6 +50,17 @@ def issafe(board: List[int], index: int, value: int):
 
 
 def solverecursive(board: List[int], fromindex: int, order: List[int] = [i for i in range(1, 10)]) -> Tuple[bool, List[int]]:
+    """Fill in the next empty square and solve the new subproblem.
+
+    Parameters:
+        board (List[int]): the sudoku board
+        fromindex (int): the first index to check
+        order (List[int]): a permutation of the list [1, 2,..., 9]
+
+    Returns:
+        solved (bool): True if a recursive call was successful in solving the subproblem; False otherwise
+        newboard (List[int]): the solved sudokuboard
+    """
     if len(board) != BOARDSIZE:
         raise ValueError(f"invalid sudoku board. {len(board)} instead of BOARDSIZE")
 
@@ -69,6 +90,15 @@ def solverecursive(board: List[int], fromindex: int, order: List[int] = [i for i
 
 
 def solve(board: List[int]) -> Tuple[bool, List[int]]:
+    """Solve the given sudoku board
+
+    Parameters:
+        board (List[int]): the sudoku board
+
+    Returns:
+        solved (bool): True if a solution was found; False otherwise
+        newboard (List[int]): the solved sudokuboard        
+    """
     if len(board) != BOARDSIZE:
         raise ValueError(f"invalid sudoku board. {len(board)} instead of BOARDSIZE")
 
@@ -76,6 +106,14 @@ def solve(board: List[int]) -> Tuple[bool, List[int]]:
 
 
 def checkboard(board: List[int]) -> bool:
+    """Check if the board contains any conflicts.
+
+    Parameters:
+        board (List[int]): the sudoku board
+
+    Returns:
+        valid (bool): True if there are no conflicts; False otherwise
+    """
     if len(board) != BOARDSIZE:
         raise ValueError(f"invalid sudoku board. {len(board)} instead of BOARDSIZE")
 
@@ -87,6 +125,14 @@ def checkboard(board: List[int]) -> bool:
 
 
 def hassinglesolution(board: List[int]) -> bool:
+    """Check if the given board only has a single solution.
+
+    Parameters:
+        board (List[int]): the sudoku board
+
+    Returns:
+        single (bool): True if using opposite orders to solve 3
+    """
     if len(board) != BOARDSIZE:
         raise ValueError(f"invalid sudoku board. {len(board)} instead of BOARDSIZE")
 
@@ -106,6 +152,11 @@ def hassinglesolution(board: List[int]) -> bool:
 
 
 def createrandomsolution() -> List[int]:
+    """Create a random filled in sudoku board.
+
+    Returns:
+        output (List[int]): a valid filled in sudoku board
+    """
     board = [0 for _ in range(BOARDSIZE)]
 
     order = [i for i in range(1, 10, 1)]
@@ -117,6 +168,15 @@ def createrandomsolution() -> List[int]:
 
 
 def createpuzzle(tries: int = 3) -> Tuple[List[int], List[int]]:
+    """Create a sudoku puzzle and a solution
+
+    Parameters:
+        tries (int): number of times to let a try be wrong
+
+    Returns:
+        board (List[int]): an incomplete sudoku board
+        solution (List[int]): the solution to the other output
+    """
     board = createrandomsolution()
     solution = copy.deepcopy(board)
 
@@ -136,6 +196,11 @@ def createpuzzle(tries: int = 3) -> Tuple[List[int], List[int]]:
 
 
 def printboard(board: List[int]):  # pragma: no cover
+    """Prettyprint the given board to the console
+
+    Parameters:
+        board (List[int]): the sudoku board        
+    """
     if len(board) != BOARDSIZE:
         raise ValueError(f"invalid sudoku board. {len(board)} instead of BOARDSIZE")
 
@@ -149,6 +214,16 @@ def printboard(board: List[int]):  # pragma: no cover
 
 
 def drawboard(board: List[int], width: int, height) -> Image:  # pragma: no cover
+    """Create an image of the given board.
+
+    Parameters:
+        board (List[int]): the sudoku board
+        width (int): the pixel width of the output image
+        height (int): the pixel height of the output image
+
+    Returns:
+        img (Image): a width x heigth RGB image that represents the sudoku
+    """
     img = Image.new(mode='RGB', size=(width, height), color=(255, 255, 255))
 
     draw = ImageDraw.Draw(img)
